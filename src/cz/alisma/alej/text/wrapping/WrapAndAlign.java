@@ -30,13 +30,46 @@ public class WrapAndAlign {
     private static final int MAX_WIDTH = 50;
 
     public static void main(String[] args) {
+        Aligner aligner = new LeftAligner();
         Scanner input = new Scanner(System.in);
         ParagraphDetector pd = new ParagraphDetector(input);
-        Aligner aligner = new LeftAligner();
+
+        int width = MAX_WIDTH;
+        boolean isSettingWidth = false;     // Instance of a flag
+
+        for (String arg : args) {
+            if (!isSettingWidth) {
+                switch (arg) {
+                    case "--right":
+                        aligner = new RightAligner();   // Nefunkční
+                        break;
+                    case "--center":
+                    case "--centre":
+                        aligner = new CenterAligner();  // Nefunkční
+                        break;
+                    case "--justify":
+                        aligner = new FillAligner();    // Nefunkční
+                        break;
+                    case "-w":
+                        isSettingWidth = true;
+                        break;
+                    // Jump over one arg
+                    default:
+                        if (arg.startsWith("--width=")) {
+                            String[] splitArg = arg.split("=");
+                            width = Integer.parseInt(splitArg[1]);
+                        }
+                        break;
+                }
+            } else {
+                width = Integer.parseInt(arg);
+                isSettingWidth = false;
+            }
+        }
 
         while (pd.hasNextParagraph()) {
             Paragraph para = pd.nextParagraph();
-            LinePrinter line = new LinePrinter(System.out, MAX_WIDTH, aligner);
+            LinePrinter line = new LinePrinter(System.out, width, aligner);
             while (para.hasNextWord()) {
                 String word = para.nextWord();
                 line.addWord(word);
@@ -44,5 +77,7 @@ public class WrapAndAlign {
             line.flush();
             System.out.println();
         }
+
     }
+
 }
