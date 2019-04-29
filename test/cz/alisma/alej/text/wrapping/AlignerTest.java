@@ -17,17 +17,30 @@ public class AlignerTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                {new LeftAligner(), TEXT, 5, TEXT},                     // Left-side aligning
-                {new RightAligner(), TEXT, 5, "     " + TEXT},          // Right-side Aligning
-                {new CenterAligner(), TEXT, 4, "  " + TEXT + "  "},     // Center-gravity aligning w/ even spaces
-                {new CenterAligner(), TEXT, 5, "  " + TEXT + "   "},    // Center-gravity aligning w/ odd spaces
-                {new CenterAligner(), TEXT, 0, TEXT},                   // Center-gravity aligning with no spaces
+                {new LeftAligner(), TEXT, 5, ArrayToString(TEXT)},                     // Left-side aligning
+                {new RightAligner(), TEXT, 5, "     " + ArrayToString(TEXT)},          // Right-side Aligning
+                {new CenterAligner(), TEXT, 4, "  " + ArrayToString(TEXT)},     // Center-gravity aligning w/ even spaces
+                {new CenterAligner(), TEXT, 5, "  " + ArrayToString(TEXT)},    // Center-gravity aligning w/ odd spaces
+                {new CenterAligner(), TEXT, 0, ArrayToString(TEXT)},                   // Center-gravity aligning with no spaces
                 {new FillAligner(), TEXT, 6,                            // Fill-aligning with commensurable n. of spaces
                         TEXT.get(0) + "   " + TEXT.get(1) + "   " + TEXT.get(2)},
                 {new FillAligner(), TEXT, 5,
                         TEXT.get(0) + "   " + TEXT.get(1) + "  " + TEXT.get(2)}
 
         });
+    }
+
+    private static String ArrayToString(List<String> text) {
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+        for (String word : text) {
+            if (!first) {
+                result.append(" ");
+            }
+            first = false;
+            result.append(word);
+        }
+        return result.toString();
     }
 
     private Aligner aligner;
